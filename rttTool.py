@@ -59,7 +59,38 @@ import csv
 
 
 #json code
+jsonFilePath = resource_find("common.json")
+jsonFilePathCoord = resource_find("coordinates.json")
+jsonFilePathCoordController = resource_find("coordinate_controller.json")
+modelPath = resource_find("yolov3.pt")
+kvFile = resource_find("latencyTool.kv")
+if kvFile:
+    Builder.load_file(str(kvFile))
+else:
+    print("error")
+
+pytesseract.pytesseract.tesseract_cmd = r"{add_path to tesseract.exe here}"
+
+capabilites = dict(
+    deviceName = 'Android',
+    platformName = 'Android',
+    automationName='uiautomator2',
+    appWaitForLaunch='false',
+    language='en',
+    locale='US',
+    uiautomator2ServerInstallTimeout='99999'
+
+)
+
+appium_server_url = 'http://localhost:4723'
+
+with open(jsonFilePath, "r") as common:
+    data = json.load(common)
+    path = data['videoPath']
+
+dir_path_cam = r".\Apprelated"
 
 
-
-
+#createTestRecordClass
+class createTestRecordClass(FloatLayout):
+    
