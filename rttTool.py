@@ -187,3 +187,82 @@ class loadTestRecordClass(FloatLayout):
 
 class deleteTestConfimation(FloatLayout):
     pass
+
+class edittestRecordClass(FloatLayout):
+    testName: TextInput
+    data: TextInput
+    recordedVideo: TextInput
+    vidRelatedInfo: TextInput
+    json_file_to_delete = ""
+
+    def selectTest(self):
+        root = tk.Tk()
+        root.withdraw()
+        default_ext = ".json"
+        selected_dir = filedialog.askopenfilename(filetypes=[("Json files", "*.json")], defaultextension=default_ext,
+                                                  initialdir=dir_path_cam, title="Select Directory")
+        if(selected_dir):
+            self.json_file_to_delete = selected_dir
+            with open(f"{selected_dir}", "r") as common:
+                data =  json.load(common)
+
+            self.testName.text = data['TestName']
+            self.data.text = data['Date Created']
+            self.recordedVideo.text = data['Video Path']
+            self.vidRelatedInfo.text = data['Video Related Info']
+
+
+    def file(self):
+        root = tk.Tk()
+        root.withdraw()
+        default_ext = ".mp4"
+        selected_dir = filedialog.askopenfilename(filetypes=[("MP4 files", "*.mp4")], defaultextension=default_ext,
+                                                  initialdir=dir_path_cam, title="Select Directory")
+
+        if(selected_dir):
+            self.recordedVideo.text = selected_dir
+            print(selected_dir)
+
+    def delete(self):
+        popupWindowEditRecData = Popup(title='Test Seletion Confirmation', content=deleteTestConfimation(), size_hint=(None,None), size=(550,400))
+        if(len(self.json_file_to_delete)):
+            os.remove(self.json_file_to_delete)
+            print("deleted")
+            self.testName.text = ""
+            self.date.text = ""
+            self.recordedVideo.text = ""
+            self.vidRelatedInfo.text = ""
+        else:
+            print("File not selected")
+
+    def saveTestData(self):
+        if(self.recordedVideo.text!=""):
+            dictTest = {'TestName':self.testName.text, 'Date Created': self.date.text, 'Video Path': self.recordedVideo.text, 'Video Related Info': self.vidRelatedInfo.text}
+
+            testName = dictTest['TestName']
+            if(len(self.json_file_to_delete)):
+                os.remove(self.json_file_to_delete)
+            with open(f'{dir_path_cam}/{testName}.json', "w") as outfile:
+                json.dump(dictTest, outfile)
+
+            self.testName.text = ""
+            self.date.text = ""
+            self.recordedVideo.text = ""
+            self.vidRelatedInfo.text = ""
+            print("Test Saved")
+
+            MyGridLayout.popupWindowEditRecData.dismiss()
+        else:
+            print('No file chosen')
+            MyGridLayout.popupWindowEditRecData.dismiss()
+
+    def cancelapp(self):
+        self.testName.text = ""
+        self.date.text = ""
+        self.recordedVideo.text = ""
+        self.vidRelatedInfo.text = ""
+        MyGridLayout.popupWindowEditRecData.dismiss()
+
+
+class analysisStartedPopupClass(FloatLayout):
+    pass
