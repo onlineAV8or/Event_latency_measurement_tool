@@ -188,7 +188,7 @@ class loadTestRecordClass(FloatLayout):
 class deleteTestConfimation(FloatLayout):
     pass
 
-class edittestRecordClass(FloatLayout):
+class editTestRecordClass(FloatLayout):
     testName: TextInput
     data: TextInput
     recordedVideo: TextInput
@@ -266,3 +266,35 @@ class edittestRecordClass(FloatLayout):
 
 class analysisStartedPopupClass(FloatLayout):
     pass
+
+class RedMarkerSlider(Slider):
+    marker_color = ListProperty([1,0,0,1]) #red color
+    marker_width = NumericProperty(5)
+    marker_height = NumericProperty(30)
+    marker_positions = ListProperty([])
+
+    def __init__(self):
+        super().__init__(**kwargs)
+        self.bind(marker_positions=self.update_markers)
+        self.bind(size=self.update_markers)
+
+    def update_markers(self, *args):
+        self.canvas.after.clear()
+        with self.canvas.after:
+            Color(*self.marker_color)
+            for pos in self.marker_positions:
+                x = self.x +pos/self.max * self.width - self.marker_width/2
+                y = self.center_y - self.marker_height/2
+                Rectangle(pos=(x,y), size=(self.marker_width, self.marker_height))
+
+    def on_size(self,*args):
+        self.update_markers()
+
+
+
+class ScreenOne(Screen):
+    pass
+
+class ScreenTwo(Screen):
+    parent_screen_manager = ObjectProperty(None)
+
